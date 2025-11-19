@@ -1,8 +1,14 @@
 const socket = io();
-console.log(socket)
+// declaration des elements HTML
+const sendGlobalMessage = document.getElementById("sendGlobalMessage");
+const usersList = document.getElementById("usersList");
+
+// recuperation des parametres get de mon url 
 let params = new URLSearchParams(document.location.search);
-let name = params.get("name"); // is the string "Jonathan"
+let name = params.get("name"); 
+// envoie du nom utilisateur au serveur à la première connexion
 socket.emit("hello",{name:name})
+// utilisation de tinyMCE pour la saisie des messages
 tinymce.init({
     selector: '#message',
     plugins: [
@@ -13,3 +19,20 @@ tinymce.init({
         'alignleft aligncenter alignright alignjustify | ' +
         'bullist numlist checklist outdent indent | removeformat | a11ycheck code table help'
 });
+// au clique sur le bonton envoyer du message je recupere le contenu 
+// tinyMCE ...
+sendGlobalMessage.addEventListener("click",()=>{
+    let monMessage = tinyMCE.get('message').getContent();
+    // ... et l'envoie au serveur
+    socket.emit("newMessage",{monMessage:monMessage})
+})
+// recupération et affichage de la liste de mes
+// users
+let users;
+socket.on("users",(res)=>{
+    users = res.users;
+    usersList.innerHTML = "";
+    users.array.forEach(element => {
+        usersList.append(`<li>${element.name}</li>`);
+    });
+})
