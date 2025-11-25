@@ -2,21 +2,35 @@ const socket = io();
 // declaration des elements HTML
 const sendGlobalMessage = document.getElementById("sendGlobalMessage");
 const usersList = document.getElementById("usersList");
+const messages = document.getElementById("messages")
 // recuperation des parametres get de mon url 
 let params = new URLSearchParams(document.location.search);
 let name = params.get("name");
 // function
 const updateUser = (res) => {
-    users = res.users;
+    let users = res.users;
     usersList.innerHTML = "";
     users.forEach(element => {
-        if(element.id !== socket.id){
-            console.log("element",element.id,"socket",socket.id)
+        if (element.id !== socket.id) {
+            console.log("element", element.id, "socket", socket.id)
             const li = document.createElement("li");
             li.innerText = element.name;
             usersList.append(li);
         }
     });
+}
+const updateMessage = (res) => {
+    let messagesServer = res.messages;
+    messages.innerHTML = "";
+    messagesServer.forEach((element) => {
+        const div = document.createElement("div");
+        div.innerHTML = `
+            <p>${element.name}</p>
+            <p>${element.content}</p>
+            <p>${element.date}</p>
+        `
+        messages.append(div);
+    })
 }
 // envoie du nom utilisateur au serveur à la première connexion
 socket.emit("hello", { name: name })
@@ -39,8 +53,6 @@ sendGlobalMessage.addEventListener("click", () => {
     socket.emit("newMessage", { monMessage: monMessage })
 })
 // recupération et affichage de la liste de mes
-// users
-let users;
 socket.on("users", (res) => {
     updateUser(res);
 })
@@ -48,3 +60,9 @@ socket.on("users", (res) => {
 socket.on("newUser", (res) => {
     updateUser(res);
 })
+// un utilisateur s'est deconnecté'
+socket.on("userleft", (res) => {
+    updateUser(res);
+})
+socket.on("messages",updateMessage);
+socket.on("newMessageFromServer",updateMessage);
