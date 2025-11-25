@@ -32,7 +32,8 @@ let users;
 socket.on("users",(res)=>{
     users = res.users;
     usersList.innerHTML = "";
-    users.array.forEach(element => {
+    users.forEach(element => {
         usersList.append(`<li>${element.name}</li>`);
     });
 })
+// un nouvel utilisateur se connecte sur Ceppouic

@@ -10,6 +10,9 @@ const initSocket = (io,name) => {
             socket.emit("users",{"users":users}),
             users.push({id:socket.id,name:res.name})
             console.log("reponse ",res)
+            // le serveur doit informer les autres utilisateurs connectés
+            // de l'arrivée d'un nouveau en passant la liste users mise a jour
+            socket.broadcast.emit("newUser",{"users":users});
         })
         socket.on("newMessage",(res)=>{
             console.log("nouveau message ",res)
