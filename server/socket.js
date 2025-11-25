@@ -28,8 +28,8 @@ const initSocket = (io,name) => {
             }
             messages.push(message);
             console.log("nouveau message ",message);
-            socket.broadcast.emit("newMessageFromServer",{messages:messages});
-
+            //socket.broadcast.emit("newMessageFromServer",{messages:messages});
+            io.emit("newMessageFromServer",{messages:messages})
         })
         socket.on("disconnect",()=>{
             users = users.filter(value=>value.id!==socket.id);
