@@ -32,8 +32,6 @@ const updateMessage = (res) => {
         messages.append(div);
     })
 }
-// envoie du nom utilisateur au serveur à la première connexion
-socket.emit("hello", { name: name })
 // utilisation de tinyMCE pour la saisie des messages
 tinymce.init({
     selector: '#message',
@@ -42,9 +40,11 @@ tinymce.init({
         'fullscreen', 'insertdatetime', 'media', 'table', 'help', 'wordcount', 'emoticons'
     ],
     toolbar: 'undo redo | formatpainter casechange blocks | bold italic backcolor emoticons | ' +
-        'alignleft aligncenter alignright alignjustify | ' +
-        'bullist numlist checklist outdent indent | removeformat | a11ycheck code table help'
+    'alignleft aligncenter alignright alignjustify | ' +
+    'bullist numlist checklist outdent indent | removeformat | a11ycheck code table help'
 });
+// envoie du nom utilisateur au serveur à la première connexion
+socket.emit("hello", { name: name })
 // au clique sur le bonton envoyer du message je recupere le contenu 
 // tinyMCE ...
 sendGlobalMessage.addEventListener("click", () => {
