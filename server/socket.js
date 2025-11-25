@@ -31,6 +31,9 @@ const initSocket = (io,name) => {
             //socket.broadcast.emit("newMessageFromServer",{messages:messages});
             io.emit("newMessageFromServer",{messages:messages})
         })
+        socket.on("privateMessageTo",(res)=>{
+            io.to(res.target).emit("secretMessageBofBof",{secretMessage:res.secretMessage})
+        })
         socket.on("disconnect",()=>{
             users = users.filter(value=>value.id!==socket.id);
             // envoie aux clients encore connectés le tableau user mis a jour
